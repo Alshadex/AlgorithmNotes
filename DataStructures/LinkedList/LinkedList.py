@@ -17,27 +17,6 @@ class Node:
 			return 'Node({}, {})'.format(repr(self.value), repr(self.next))
 
 
-def prepend(n: Node, value: object) -> Node:
-	'''insert at the beginning.
-	   prepend value and return new beginning Node.
-	'''
-	return Node(value, n)
-
-def append(n: Node, value: object) -> Node:
-	'''Append value and return beginning node.
-	   Without keeping access to the last node.
-
-	   This is linear time function, we want constant-time.
-	   Trick: we're going to maintain a refernce to the final node.
-	'''
-	if n.next == None:
-		return Node(value)
-	beginning = n
-	while n.next != None:
-		n = n.next
-	n.next = Node(value)
-	return beginning
-
 
 class LinkedList:
 	''' Collection of Nodes to form a linked list'''
@@ -99,3 +78,24 @@ class LinkedList:
 		for i in range(index):
 			n = n.next
 		return n.value
+
+
+if __name__ == "__main__":
+	import argparse
+	CLI=argparse.ArgumentParser()
+	CLI.add_argument(
+		"--list",
+		nargs="*",
+		type=int,
+		default=[3,2,1]
+	)
+	args = CLI.parse_args()
+
+	ll = LinkedList()
+	for i in args.list:
+		ll.append(i)
+	print(ll)
+	ll.remove_front()
+	print(ll)
+	ll.prepend(34)
+	print(ll[2])
