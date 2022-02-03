@@ -1,33 +1,4 @@
-def binary_tree(value):
-	return [value, None, None]
-
-def insert_left(bt, value):
-	if bt == None:
-		raise ValueError('cannot insert into empty tree')
-	left_branch = bt.pop(1)
-	bt.insert(1, [value, left_branch, None])
-
-def insert_right(bt, value):
-	if bt == None:
-		raise ValueError('cannot insert into empty tree')
-	right_branch = bt.pop(2)
-	bt.insert(2, [value, None, right_branch])
-
-def height(bt):
-	if bt == None:
-		return 0
-	return 1 + max(height(bt[1]), height(bt[2]))
-
-def contains(bt, value):
-	if bt == None:
-		raise ValueError()
-	return bt[0] == value or contains(bt[1], value) or contains(bt[2], value)
-
-def preorder(bt):
-	if bt == None:
-		return []
-	return [bt[0]] + preorder(bt[1]) + preorder(bt[2])
-
+from collections import deque
 
 
 class BinaryTree:
@@ -63,17 +34,76 @@ class BinaryTree:
 		return self.leftChild.get_leaves() + self.rightChild.get_leaves()
 
 	def preorder(self):
+		'''
+		Root -> Left -> Right
+		'''
 		if self.leftChild == None and self.rightChild == None:
-                        return [self.key]
+			return [self.key]
 		if self.leftChild == None:
-			return self.rightChild.preorder()
+			return [self.key] + self.rightChild.preorder()
 		if self.rightChild == None:
-			return self.leftChild.preorder()
-		return self.leftChild.preorder() + self.rightChild.preorder()
-def expr(tree):
-	if not tree:
-		return ''
-	s = '(' + expr(tree.leftChild)
-	s = s + str(tree.key)
-	s = s + expr(tree.rightChild) + ')'
-	return s
+			return [self.key] + self.leftChild.preorder()
+		return [self.key] + self.leftChild.preorder() + self.rightChild.preorder()
+
+	def inorder(self):
+		'''
+		Left -> Root -> Right
+		'''
+		if self.leftChild == None and self.rightChild == None:
+			return [self.key]
+		if self.leftChild == None:
+			return [self.key] + self.rightChild.inorder()
+		if self.rightChild == None:
+			return self.leftChild.inorder() + [self.key]
+		return self.leftChild.inorder() + [self.key] + self.rightChild.inorder()
+
+	def postorder(self):
+		'''
+		Left -> Right -> Root
+		'''
+		if self.leftChild == None and self.rightChild == None:
+			return [self.key]
+		if self.leftChild == None:
+			return self.rightChild.postorder() + [self.key]
+		if self.rightChild == None:
+			return self.leftChild.postorder() + [self.key]
+		return self.leftChild.postorder() + self.rightChild.postorder() + [self.key]
+
+
+	def level_order(self):
+		'''
+		Breadth first search traversal
+		'''
+		q = deque()
+		q.appendleft(self)
+		while len(q) != 0:
+			tmp = q.pop()
+			if tmp.leftChild != None:
+				q.appendleft(tmp.leftChild)
+			if tmp.rightChild != None:
+				q.appendleft(tmp.rightChild)
+			print(tmp.key)
+
+
+if __name__ == "__main__":
+	import argparse
+	CLI=argparse.ArgumentParser()
+	CLI.add_argument(
+		"--list",
+		nargs="*",
+		type=int,
+		default=[3,2,1]
+	)
+	args = CLI.parse_args()
+
+	t = BinaryTree(1)
+	t.insertRight(3)
+	t.insertLeft(4)
+	t.insertLeft(2)
+	t.leftChild.insertRight(5)
+	print(t.get_leaves())
+	print(t.inorder())
+	print(t.postorder())
+	print(t.preorder())
+	print(t.level_order())
+
