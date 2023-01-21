@@ -7,9 +7,6 @@ var transpose = function(matrix) {
     console.log(res)
     for (i = 0; i<matrix.length; i++){
         for (j = 0; j < matrix[i].length; j++){
-	    console.log(i,j)
-	    console.log(res[j][i])
-	//console.log(matrix[i][j])
             res[j][i] = matrix[i][j]
         }
     }
